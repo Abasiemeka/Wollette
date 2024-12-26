@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### [MANUALLY INCLUDED] ENV Files (for storing Environmental Vadriables) ###
+*.env
