@@ -3,8 +3,10 @@ package com.abasiemeka.wallet.model.dto.request;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
-import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
+
+import java.time.LocalDate;
 
 @Validated
 @Builder
@@ -31,9 +33,14 @@ public record SignupDto (
 		@Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-+=]).{8,}$", message = "Password must contain at least 8 characters, one digit, one lowercase letter, one uppercase letter, and one special character")
 		String password,
 		
+		@Size(max = 100)
+		@NotBlank(message = "Email Name is required")
+		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+		@Column(unique = true)
+		LocalDate dob,
+		
 		@NotNull
 		@NotBlank(message = "Password is required")
 		@Size(min = 11, max = 11, message = "Enter valid BVN")
-		Long bvn
-) {
-}
+		String bvn
+) {}

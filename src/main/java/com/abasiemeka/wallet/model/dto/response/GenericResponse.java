@@ -1,14 +1,24 @@
 package com.abasiemeka.wallet.model.dto.response;
 
+import jakarta.annotation.Nullable;
 import lombok.Builder;
+
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
-public record GenericResponse(
-		String message,
-		ResponseStatus status,
-		Optional<Object> data
-) {
+public final class GenericResponse {
+	
+	private final String message;
+	private final ResponseStatus status;
+	private final Object data;
+	
+	public GenericResponse(String message, ResponseStatus status, @Nullable Object data) {
+		this.message = message;
+		this.status = status;
+		this.data = data;
+	}
+	
 	public enum ResponseStatus {
 		SUCCESSFUL, FAILED, ERROR, UNAUTHORIZED, NOT_FOUND, BAD_REQUEST, FORBIDDEN, CONFLICT;
 	}
@@ -58,7 +68,7 @@ public record GenericResponse(
 		return "GenericResponse{" +
 				"message='" + message + '\'' +
 				", status=" + status +
-				", data=" + (data.orElse("null")) +
+				", data=" + data +
 				'}';
 	}
 	
@@ -138,5 +148,32 @@ public record GenericResponse(
 				.status(ResponseStatus.CONFLICT)
 				.data(Optional.ofNullable(data))
 				.build();
+	}
+	
+	public String message() {
+		return message;
+	}
+	
+	public ResponseStatus status() {
+		return status;
+	}
+	
+	public Object data() {
+		return data;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) return true;
+		if (obj == null || obj.getClass() != this.getClass()) return false;
+		var that = (GenericResponse) obj;
+		return Objects.equals(this.message, that.message) &&
+				Objects.equals(this.status, that.status) &&
+				Objects.equals(this.data, that.data);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(message, status, data);
 	}
 }

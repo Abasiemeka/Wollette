@@ -2,6 +2,7 @@ package com.abasiemeka.wallet.controller;
 
 import com.abasiemeka.wallet.model.User;
 import com.abasiemeka.wallet.model.dto.request.LoginRequest;
+import com.abasiemeka.wallet.model.dto.request.SignupDto;
 import com.abasiemeka.wallet.model.dto.response.GenericResponse;
 import com.abasiemeka.wallet.service.AuthService;
 import com.abasiemeka.wallet.security.JwtTokenProvider;
@@ -33,26 +34,13 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-    public GenericResponse registerUser(@RequestBody User user) {
-        User registeredUser = authService.registerUser(user);
-        return new GenericResponse("User registered successfully", registeredUser);
+    public GenericResponse registerUser(@RequestBody SignupDto signupDto) {
+        return authService.registerUser(signupDto);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.email(),
-                loginRequest.password()
-            )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("token", jwt);
-        return ResponseEntity.ok(response);
+        return GenericResponse.success(authenticateUser(loginRequest.getEmail(), loginRequest.getPassword()));
     }
 }
 

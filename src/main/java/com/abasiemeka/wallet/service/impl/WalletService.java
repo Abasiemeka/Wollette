@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-public class WalletService {
+public class WalletService implements WalletServiceInterface {
     
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
@@ -99,5 +99,12 @@ public class WalletService {
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         return wallet.getBalance();
     }
+    
+    void assignWalletTo(User savedUser) {
+        Wallet.builder()
+                .user(savedUser)
+                .balance(BigDecimal.ZERO)
+                .build();
+    };
 }
 
