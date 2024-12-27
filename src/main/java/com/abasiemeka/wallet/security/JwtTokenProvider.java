@@ -1,6 +1,8 @@
 package com.abasiemeka.wallet.security;
 
 import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -10,6 +12,7 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     @Value("${app.jwtSecret}")
     private String jwtSecret;
@@ -30,13 +33,14 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
-
+    
     public Long getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
-
+        
         return Long.parseLong(claims.getSubject());
     }
 
@@ -45,15 +49,15 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            // Log error message
+            logger.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            // Log error message
+            logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            // Log error message
+            logger.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            // Log error message
+            logger.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            // Log error message
+            logger.error("JWT claims string is empty.");
         }
         return false;
     }
