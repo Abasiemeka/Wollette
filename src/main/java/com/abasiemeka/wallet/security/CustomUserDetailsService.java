@@ -17,10 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return ;
+		return null;
 	}
 	
 	public UserDetails loadUserById(Long userId) {
-		return loadUserByUsername();
+		return null;
 	}
 }

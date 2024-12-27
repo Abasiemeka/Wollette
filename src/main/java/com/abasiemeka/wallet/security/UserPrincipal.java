@@ -2,6 +2,7 @@ package com.abasiemeka.wallet.security;
 
 import com.abasiemeka.wallet.model.User;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +13,11 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
+	@Getter
 	private Long id;
+	@Getter
 	private String username;
+	@Getter
 	private String password;
 	private Collection<? extends GrantedAuthority> authorities;
 	
@@ -24,7 +28,7 @@ public class UserPrincipal implements UserDetails {
 		
 		return new UserPrincipal(
 				user.getId(),
-				user.getUsername(),
+				user.getEmail(),
 				user.getPassword(),
 				authorities
 		);
@@ -33,16 +37,6 @@ public class UserPrincipal implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of();
-	}
-	
-	@Override
-	public String getPassword() {
-		return "";
-	}
-	
-	@Override
-	public String getUsername() {
-		return "";
 	}
 	
 	@Override

@@ -17,5 +17,7 @@ public class Wallet {
     private User user;
 
     private BigDecimal balance;
+    
+    private String tier;
 }
 

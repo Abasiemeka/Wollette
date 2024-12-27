@@ -2,9 +2,9 @@ package com.abasiemeka.wallet.controller;
 
 import com.abasiemeka.wallet.model.User;
 import com.abasiemeka.wallet.model.dto.request.LoginRequest;
-import com.abasiemeka.wallet.service.UserService;
+import com.abasiemeka.wallet.model.dto.response.GenericResponse;
+import com.abasiemeka.wallet.service.AuthService;
 import com.abasiemeka.wallet.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,19 +21,21 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtTokenProvider tokenProvider;
-
-    @Autowired
-    private UserService userService;
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
-        User registeredUser = userService.registerUser(user);
-        return ResponseEntity.ok(registeredUser);
+	
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
+    private final AuthService authService;
+	
+	public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, AuthService authService) {
+		this.authenticationManager = authenticationManager;
+		this.tokenProvider = tokenProvider;
+		this.authService = authService;
+	}
+	
+	@PostMapping("/register")
+    public GenericResponse registerUser(@RequestBody User user) {
+        User registeredUser = authService.registerUser(user);
+        return new GenericResponse("User registered successfully", registeredUser);
     }
 
     @PostMapping("/login")

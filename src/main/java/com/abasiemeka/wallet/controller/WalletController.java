@@ -4,10 +4,8 @@ import com.abasiemeka.wallet.model.User;
 import com.abasiemeka.wallet.model.dto.request.FundRequest;
 import com.abasiemeka.wallet.model.dto.request.WithdrawRequest;
 import com.abasiemeka.wallet.model.dto.request.TransferRequest;
-import com.abasiemeka.wallet.service.UserService;
+import com.abasiemeka.wallet.service.AuthService;
 import com.abasiemeka.wallet.service.WalletService;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +22,7 @@ public class WalletController {
     private WalletService walletService;
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     @PostMapping("/fund")
     public ResponseEntity<?> fundWallet(@AuthenticationPrincipal User user, @RequestBody FundRequest fundRequest) {
@@ -34,7 +32,7 @@ public class WalletController {
 
     @PostMapping("/transfer")
     public ResponseEntity<?> transferFunds(@AuthenticationPrincipal User sender, @RequestBody TransferRequest transferRequest) {
-        User recipient = userService.getUserByEmail(transferRequest.recipientEmail());
+        User recipient = authService.getUserByEmail(transferRequest.recipientEmail());
         walletService.transferFunds(sender, recipient, transferRequest.amount());
         return ResponseEntity.ok("Funds transferred successfully");
     }
